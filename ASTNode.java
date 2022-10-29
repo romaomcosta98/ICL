@@ -1,6 +1,7 @@
 public interface ASTNode {
 
-    int eval(Environment e);
+    int eval(Environment env);
+
 	
 }
 
