@@ -1,28 +1,38 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.LinkedList;
+
 public class Environment {
-    private List<HashMap<String, Integer>> env;
-    
-    public Environment() {
-       env = new LinkedList<>();
+    private Map<String, Integer> env;
+    private Environment prevEnv;
+
+    public Environment(Environment prevEnvironment) {
+        this.env = new HashMap<String, Integer>();
+        this.prevEnv = prevEnv;
     }
 
     Environment beginScope(){
-        return new Environment();
+        return new Environment(this);
     } //push level
+
     Environment endScope(){
-        return this;
+        return prevEnv;
     } //pop level
 
     void assoc(String id, int value){
-        map.put(id, value);
+       Integer val = env.putIfAbsent(id, value);
+       if(val != null){
+           throw new RuntimeException("Variable already defined: " + id);
+       }
     }
     int find(String id){
-        
+        Integer val = env.get(id);
+        if(val != null){
+          return val.intValue();
+        }
+        if(prevEnv != null){
+            return prevEnv.find(id);
+        }
+    
+        throw new RuntimeException("Variable not defined: " + id);
     }
-
-
 }
