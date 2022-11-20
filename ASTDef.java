@@ -24,5 +24,20 @@ public class ASTDef {
 
     }
 
+    void compile(CodeBlock c){
+        c.emit("new Environment");
+        c.emit("dup");
+        c.emit("invokespecial Environment/<init>()V");
+        c.emit("astore_1");
+        for(Entry<String, ASTNode> aux : init.entrySet()){
+            c.emit("aload_1");
+            aux.getValue().compile(c);
+            c.emit("invokevirtual Environment/assoc(Ljava/lang/String;I)V");
+        }
+        c.emit("aload_1");
+        body.compile(c);
+        c.emit("areturn");
+    };
+
     
 }

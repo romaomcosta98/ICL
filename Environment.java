@@ -18,6 +18,10 @@ public class Environment {
         return prevEnv;
     } //pop level
 
+    int depth(){
+        return env.size();
+    }
+    
     void assoc(String id, int value){
        Integer val = env.putIfAbsent(id, value);
        if(val != null){
