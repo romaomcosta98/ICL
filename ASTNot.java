@@ -5,9 +5,13 @@ public class ASTNot implements ASTNode {
         lhs = l;
     }
 
-    public int eval(Environment env) {
-        int v1 = lhs.eval(env);
-        return -v1;
+    public IValue eval(Environment<IValue> env) throws TypeErrorException {
+        IValue v1 = lhs.eval(env);
+        if (v1 instanceof VBool) {
+            return new VBool(!((VBool) v1).getValue());
+        } else {
+            throw new TypeErrorException("! : requires a boolean");
+        }
     }
 
     @Override

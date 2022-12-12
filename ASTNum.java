@@ -1,13 +1,18 @@
 public class ASTNum implements ASTNode {
 
-int val;
+IValue val;
 
-        public ASTNum(int v){
+        public ASTNum(IValue v){
                 val = v; 
         } 
 
-        public int eval(Environment env) { 
+        public IValue eval(Environment<IValue> env) throws TypeErrorException {
                 return val; 
+        }
+
+        @Override
+        public void compile(CodeBlock c, Environment e) {
+                c.emit("iconst " + val);
         }
 }
 

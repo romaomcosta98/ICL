@@ -5,7 +5,7 @@ public class ASTId implements ASTNode {
         this.id = id;
     }
 
-    public int eval(Environment env) {
+    public IValue eval(Environment<IValue> env) throws TypeErrorException {
         return env.find(id);
     }
 

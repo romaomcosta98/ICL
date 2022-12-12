@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ASTDef{
+public class ASTDef implements ASTNode{
     
     Map<String, ASTNode> init;
     ASTNode body;
@@ -26,6 +26,15 @@ public class ASTDef{
         }
         throw new TypeErrorException("Body of def must be an int or a bool");
 
+    }
+
+    public ASTNode setBody(ASTNode body){
+        this.body = body;
+        return this;
+    }
+
+    public void addBiding(String id, ASTNode value){
+        init.put(id, value);
     }
 
     void compile(CodeBlock c, Environment env){

@@ -7,10 +7,14 @@ ASTNode lhs, rhs;
                 rhs = r;
         }
 
-        public int eval(Environment env){ 
-                int v1 = lhs.eval(env);
-                int v2 = rhs.eval(env);
-                return v1+v2; 
+        public IValue eval(Environment<IValue> env) throws TypeErrorException{
+                IValue v1 = lhs.eval(env);
+                IValue v2 = rhs.eval(env);
+                if (v1 instanceof VInt && v2 instanceof VInt) {
+                       return new VInt(((VInt)v1).getValue() + ((VInt)v2).getValue());
+                } else {
+                        throw new TypeErrorException("+ : requires two integers");
+                }
 	}
 
         @Override
