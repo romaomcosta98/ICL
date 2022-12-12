@@ -1,6 +1,0 @@
-- Acabar de resolver o compile da
-    classe ASTNode
-- Resolver a parte do Parser no ICLInterpreter
-    e ICLCompiler
-- Falta handout Phase 1.1 (ultima coisa)
-- Mudar o environment para genérico
