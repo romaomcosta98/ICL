@@ -1,43 +1,68 @@
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ASTDef {
+public class ASTDef{
     
     Map<String, ASTNode> init;
     ASTNode body;
-    
-    public ASTDef(Map<String, ASTNode> init, ASTNode body){
-        this.init = init;
-        this.body = body;
+
+    public ASTDef() {
+       init = new HashMap<String, ASTNode>();
     }
 
-    int eval(Environment e){
+    public IValue eval(Environment<IValue> e) throws TypeErrorException{
         e = e.beginScope();
-        int v;
-        for(Entry<String, ASTNode> aux : init.entrySet()){
-            v = aux.getValue().eval(e);
-            e.assoc(aux.getKey(), v);
+        e = e.beginScope();
+        for(String key : init.keySet()){
+            IValue value = init.get(key).eval(e);
+            e.assoc(key, value);
         }
-        v = body.eval(e);
+
+        IValue bodyEval = body.eval(e);
         e = e.endScope();
-        return v;
+        if(bodyEval instanceof VInt || bodyEval instanceof VBool) {
+            return bodyEval;
+        }
+        throw new TypeErrorException("Body of def must be an int or a bool");
 
     }
 
-    void compile(CodeBlock c){
-        c.emit("new Environment");
-        c.emit("dup");
-        c.emit("invokespecial Environment/<init>()V");
-        c.emit("astore_1");
-        for(Entry<String, ASTNode> aux : init.entrySet()){
-            c.emit("aload_1");
-            aux.getValue().compile(c);
-            c.emit("invokevirtual Environment/assoc(Ljava/lang/String;I)V");
+    void compile(CodeBlock c, Environment env){
+       env = env.beginScope();
+       String frame = "frame_" + env.depth();
+       c.emit(".class public " + frame);
+        c.emit(".super java/lang/Object");
+        if(env.depth() == 0){
+            c.emit(".field public sl Ljava/lang/Object;");
         }
-        c.emit("aload_1");
-        body.compile(c);
-        c.emit("areturn");
-    };
+        else{
+            c.emit(".field public sl Lframe_" + (env.depth()-1) + ";");
+        }
+        for(Entry<String, ASTNode> aux : init.entrySet()){
+            c.emit(".field public " + aux.getKey() + " I");
+        }
+        c.emit(".method public <init>()V");
+        c.emit("aload_0");
+        c.emit("invokenonvirtual java/lang/Object/<init>()V");
+        c.emit("return");
+        c.emit(".end method");
 
-    
+        c.emit("new frame_" + env.depth());
+        c.emit("dup");
+        c.emit("invokespecial frame_" + env.depth() + "/<init>()V");
+        c.emit("dup");
+        c.emit("aload_3");
+        c.emit("putfield frame_" + env.depth() + "/sl Ljava/lang/Object;");
+        c.emit("astore_3");
+
+        int counter = 1;
+        for(Entry<String, ASTNode> aux : init.entrySet()){
+            c.emit("aload_3");
+            c.emit("dup");
+            c.emit("iload " + counter);
+            c.emit("putfield frame_" + env.depth() + "/" + aux.getKey() + " I");
+            counter++;
+        }
+    }
 }

@@ -2,17 +2,12 @@ public class ASTNum implements ASTNode {
 
 int val;
 
-        public int eval(Environment env) { return val; }
+        public ASTNum(int v){
+                val = v; 
+        } 
 
-        public ASTNum(int n)
-        {
-	   val = n;
+        public int eval(Environment env) { 
+                return val; 
         }
-
-        @Override
-        public void compile(CodeBlock c) {
-                c.emit("ldc " + val);
-        }
-
 }
 
