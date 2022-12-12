@@ -4,6 +4,21 @@ PARSER_BEGIN(Parser)
 /** ID lister. */
 public class Parser {
 
+  /** Main entry point. */
+  public static void main(String args[]) {
+    Parser parser = new Parser(System.in);
+    ASTNode exp;
+
+    while (true) {
+      try {
+        exp = parser.Start();
+        System.out.println( exp.eval() );
+      } catch (Exception e) {
+        System.out.println ("Syntax Error!");
+        parser.ReInit(System.in);
+      }
+    }
+  }
 
 }
 
@@ -29,6 +44,8 @@ TOKEN :
   < TIMES : "*">
   |
   < DIV : "/">
+  |
+  <NOT : "~"> 
   |
   < LPAR : "(" >
   |
@@ -62,35 +79,26 @@ ASTNode Term() :
   ASTNode t1, t2;}
 {
      t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Term() 
- 		 {
-                 } 
+ 		 {  if(op.kind == TIMES)
+              t1 = new ASTMul(t1,t2);
+        else
+              t1 = new ASTDiv(t1,t2);
+      } 
 		)?
      { return t1; } 
 }
-
 
 ASTNode Fact() :
 { Token n; 
   ASTNode t;}
 {
    ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); } 
-   | <id>
-   | <{> {l = new List()} (<let> xi = <id> <=> ti = Ei <;> {l.add(xi,ti)}) + E <{>
-   | <LPAR> t=Exp() <RPAR> 
-   | <MINUS> t=Fact(){t = new ASTNeg(t)})
+    | 
+    <LPAR> t=Exp() <RPAR>
+    | 
+    n = <NOT> 
+    )
    { return t; }
-}
-
-ASTNode Fact() :
-{
-  Token n;
-  ASTNodet;
-}
-{
-  n = <num> {t = new ASTNum(Integer.parseInt(n.image));}
-  |<{> {l = new List()}
-  (<let> xi = <id> <=> ti = Ei <;> {l.add(xi,ti)}) + E <{>
-  {return new ASTDef(l, b)}
 }
 
 
