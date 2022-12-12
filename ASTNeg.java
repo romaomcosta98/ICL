@@ -10,5 +10,11 @@ public class ASTNeg implements ASTNode{
     public ASTNeg(ASTNode n){
         val = n;
     }
+
+    @Override
+    public void compile(CodeBlock c) {
+        val.compile(c);
+        c.emit("ineg");
+    }
     
 }

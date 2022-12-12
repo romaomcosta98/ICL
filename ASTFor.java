@@ -25,5 +25,10 @@ public class ASTFor implements ASTNode {
        }
        return incr;
     }
+
+    @Override
+    public void compile(CodeBlock c) {
+        init.compile(c);
+    }
 }
 

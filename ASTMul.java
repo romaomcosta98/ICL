@@ -13,6 +13,10 @@ public class ASTMul implements ASTNode{
         lhs = l;
         rhs = r;
     }
+
+    @Override
+    public void compile(CodeBlock c) {
+    }
     
 
 }

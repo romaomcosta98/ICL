@@ -13,6 +13,13 @@ public class ASTDiv implements ASTNode {
 		  lhs = l; 
       rhs = r;
     }
+
+    @Override
+    public void compile(CodeBlock c) {
+      lhs.compile(c);
+      rhs.compile(c);
+      c.emit("idiv");
+    }
     
     
 }

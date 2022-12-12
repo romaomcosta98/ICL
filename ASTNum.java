@@ -9,5 +9,10 @@ int val;
 	   val = n;
         }
 
+        @Override
+        public void compile(CodeBlock c) {
+                c.emit("ldc " + val);
+        }
+
 }
 

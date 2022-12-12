@@ -13,5 +13,12 @@ public class ASTSub implements ASTNode{
         lhs = l;
         rhs = r;
     }
-    
+
+    @Override
+    public void compile(CodeBlock c) {
+        // TODO Auto-generated method stub
+        lhs.compile(c);
+        rhs.compile(c);
+        c.emit("isub");
+    }
 }
