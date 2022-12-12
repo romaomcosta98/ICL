@@ -1,42 +1,47 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class Environment {
-    private Map<String, Integer> env;
-    private Environment prevEnv;
+public class Environment<T> {
+    
+    private Map<String, T> mappings = new HashMap<String, T>();
+    private Environment<T> prevEnv;
 
-    public Environment(Environment prevEnvironment) {
-        this.env = new HashMap<String, Integer>();
-        this.prevEnv = prevEnv;
+    public Environment(Environment<T> prevEnvironment) {
+        this.prevEnv = prevEnvironment;
     }
 
-    Environment beginScope(){
-        return new Environment(this);
+    Environment<T> beginScope(){
+        return new Environment<T>(this);
     } //push level
 
-    Environment endScope(){
+    Environment<T> endScope(){
         return prevEnv;
     } //pop level
 
     int depth(){
-        return env.size();
+        if(prevEnv == null){
+            return 0;
+        }
+        else{
+            return prevEnv.depth() + 1;
+        }
     }
     
-    void assoc(String id, int value){
-       Integer val = env.putIfAbsent(id, value);
-       if(val != null){
-           throw new RuntimeException("Variable already defined: " + id);
-       }
+    void assoc(String id, T value){
+       mappings.put(id, value);
     }
-    int find(String id){
-        Integer val = env.get(id);
-        if(val != null){
-          return val.intValue();
-        }
-        if(prevEnv != null){
-            return prevEnv.find(id);
-        }
-    
-        throw new RuntimeException("Variable not defined: " + id);
+    T find(String id){
+       T aux = mappings.get(id);
+         if(aux == null){
+              if(prevEnv == null){
+                throw new RuntimeException("Variable " + id + " not found");
+              }
+              else{
+                return prevEnv.find(id);
+              }
+         }
+         else{
+              return aux;
+    }
     }
 }
