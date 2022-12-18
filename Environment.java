@@ -10,6 +10,10 @@ public class Environment<T> {
         this.prevEnv = prevEnvironment;
     }
 
+    public Environment() {
+        this.prevEnv = null;
+    }
+
     Environment<T> beginScope(){
         return new Environment<T>(this);
     } //push level
@@ -30,6 +34,7 @@ public class Environment<T> {
     void assoc(String id, T value){
        mappings.put(id, value);
     }
+
     T find(String id){
        T aux = mappings.get(id);
          if(aux == null){
@@ -39,9 +44,9 @@ public class Environment<T> {
               else{
                 return prevEnv.find(id);
               }
-         }
-         else{
-              return aux;
-    }
+        }
+        else{
+            return aux;
+        }
     }
 }
