@@ -10,12 +10,13 @@ public class ICLInterpreter {
             System.out.println("Missing file name");
         }
 
-        Parser parser = new Parser(System.in);
+        Parser parser = new Parser(new FileInputStream(new File(args[0])));
         ASTNode exp;
 
         try{
             exp = parser.Start();
-            exp.eval();
+            exp.eval(new Environment<>());
+            System.out.println(exp.eval(new Environment<>()));
         } catch (Exception e) {
             System.out.println("Syntax Error!");
             e.printStackTrace();
