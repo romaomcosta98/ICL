@@ -6,13 +6,13 @@ public class Parser implements ParserConstants {
   /** Main entry point. */
   public static void main(String args[]) {
     Parser parser = new Parser(System.in);
-    Environment env = new Environment(null);
+    Environment env = new Environment();
     ASTNode exp;
 
     while (true) {
     try {
-    exp = parser.Start();
-    System.out.println( exp.eval(env));
+      exp = parser.Start();
+      System.out.println( exp.eval(env));
     } catch (Exception e) {
       System.out.println ("Syntax Error!");
       parser.ReInit(System.in);
