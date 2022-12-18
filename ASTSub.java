@@ -21,10 +21,16 @@ public class ASTSub implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, Environment env) {
+    public void compile(CodeBlock c, Environment<Coordinates> env) {
         lhs.compile(c, env);
         rhs.compile(c, env);
         c.emit("isub");
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> e) throws TypeErrorException {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }

@@ -37,7 +37,7 @@ public class ASTDef implements ASTNode{
         init.put(id, value);
     }
 
-    void compile(CodeBlock c, Environment env){
+    public void compile(CodeBlock c, Environment<Coordinates> env){
        env = env.beginScope();
        String frame = "frame_" + env.depth();
        c.emit(".class public " + frame);
@@ -73,5 +73,11 @@ public class ASTDef implements ASTNode{
             c.emit("putfield frame_" + env.depth() + "/" + aux.getKey() + " I");
             counter++;
         }
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> e) throws TypeErrorException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

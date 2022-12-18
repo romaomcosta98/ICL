@@ -18,9 +18,16 @@ public class ASTOr implements ASTNode{
     }
 
     @Override
-    public void compile(CodeBlock c, Environment e) {
+    public void compile(CodeBlock c, Environment<Coordinates> e) {
+        lhs.compile(c, e);
+        rhs.compile(c, e);
+        c.emit("ior");
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> e) throws TypeErrorException {
         // TODO Auto-generated method stub
-        
+        return null;
     }
     
     

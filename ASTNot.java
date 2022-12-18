@@ -15,8 +15,13 @@ public class ASTNot implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, Environment e) {
+    public void compile(CodeBlock c, Environment<Coordinates> e) {
         lhs.compile(c, e);
-        c.emit("ineg");
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> e) throws TypeErrorException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

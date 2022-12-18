@@ -10,7 +10,13 @@ public class ASTId implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, Environment e) {
-        c.emit("iload " + e.find(id)); 
+    public void compile(CodeBlock c, Environment<Coordinates> e) {
+        c.emit("aload " + e.find(id));
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> e) throws TypeErrorException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

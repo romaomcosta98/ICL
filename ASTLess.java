@@ -1,7 +1,7 @@
-public class ASTAnd implements ASTNode {
+public class ASTLess implements ASTNode {
     ASTNode lhs, rhs;
 
-    public ASTAnd(ASTNode lhs, ASTNode rhs) {
+    public ASTLess(ASTNode lhs, ASTNode rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
     }
@@ -10,10 +10,10 @@ public class ASTAnd implements ASTNode {
     public IValue eval(Environment<IValue> env) throws TypeErrorException {
         IValue v1 = lhs.eval(env);
         IValue v2 = rhs.eval(env);
-        if (v1 instanceof VBool && v2 instanceof VBool) {
-            return new VBool(((VBool) v1).getValue() && ((VBool) v2).getValue());
+        if (v1 instanceof VInt && v2 instanceof VInt) {
+            return new VBool(((VInt) v1).getValue() < ((VInt) v2).getValue());
         } else {
-            throw new TypeErrorException("&& : requires two booleans");
+            throw new TypeErrorException("< : requires two integers");
         }
     }
 
@@ -21,7 +21,7 @@ public class ASTAnd implements ASTNode {
     public void compile(CodeBlock c, Environment<Coordinates> e) {
         lhs.compile(c, e);
         rhs.compile(c, e);
-        c.emit("iand");
+        c.emit("if_icmplt");
     }
 
     @Override
@@ -29,9 +29,5 @@ public class ASTAnd implements ASTNode {
         // TODO Auto-generated method stub
         return null;
     }
-
-    
-
-    
     
 }

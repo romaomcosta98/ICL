@@ -18,11 +18,16 @@ ASTNode lhs, rhs;
 	}
 
         @Override
-        public void compile(CodeBlock c, Environment env) {
-                lhs.compile(c,env);
-                rhs.compile(c,env);
+        public void compile(CodeBlock c, Environment<Coordinates> e) {
+                lhs.compile(c, e);
+                rhs.compile(c, e);
                 c.emit("iadd");
-                
+        }
+
+        @Override
+        public IType typecheck(Environment<IType> e) throws TypeErrorException {
+                // TODO Auto-generated method stub
+                return null;
         }
 }
 

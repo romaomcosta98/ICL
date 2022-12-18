@@ -17,9 +17,15 @@ public class ASTMul implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, Environment env) {
+    public void compile(CodeBlock c, Environment<Coordinates> env) {
         lhs.compile(c, env);
         rhs.compile(c, env);
         c.emit("imul");
     }
+    @Override
+    public IType typecheck(Environment<IType> e) throws TypeErrorException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
 }

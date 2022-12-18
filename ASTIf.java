@@ -23,9 +23,17 @@ public class ASTIf implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, Environment e) {
+    public void compile(CodeBlock c, Environment<Coordinates> e) {
+        c.emit("if");
+        cond.compile(c, e);
+        then.compile(c, e);
+        els.compile(c, e);
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> e) throws TypeErrorException {
         // TODO Auto-generated method stub
-        
+        return null;
     }
     
 }
