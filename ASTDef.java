@@ -77,7 +77,17 @@ public class ASTDef implements ASTNode{
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        e = e.beginScope();
+        for(String key : init.keySet()){
+            IType value = init.get(key).typecheck(e);
+            e.assoc(key, value);
+        }
+        IType bodyType = body.typecheck(e);
+        e = e.endScope();
+        if(bodyType instanceof TypeInt || bodyType instanceof TypeBool) {
+            return bodyType;
+        }
+        throw new TypeErrorException("Body of def must be an int or a bool");
+       
     }
 }

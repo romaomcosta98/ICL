@@ -21,8 +21,12 @@ public class ASTDeref implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = node.typecheck(e);
+        if (v1 instanceof TypeRef) {
+            return ((TypeRef) v1).getType();
+        } else {
+            throw new TypeErrorException("! : requires a reference");
+        }
     }
     
 }

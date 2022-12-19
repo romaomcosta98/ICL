@@ -25,8 +25,13 @@ public class ASTEquals implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = lhs.typecheck(e);
+        IType v2 = rhs.typecheck(e);
+        if(v1.equals(v2)) {
+            return new TypeBool();
+        } else {
+            throw new TypeErrorException("== : requires two integers");
+        }
     }
     
 }

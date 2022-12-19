@@ -30,8 +30,17 @@ public class ASTNotEqual implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = lhs.typecheck(e);
+        IType v2 = rhs.typecheck(e);
+        if (v1 instanceof TypeInt && v2 instanceof TypeInt) {
+            return new TypeBool();
+        } else if(v1 instanceof TypeBool && v2 instanceof TypeBool) {
+            return new TypeBool();
+        } else if(v1 instanceof TypeRef && v2 instanceof TypeRef) {
+            return new TypeBool();
+        } else {
+            throw new TypeErrorException("!= : requires two values of the same type");
+        }
     }
     
 }

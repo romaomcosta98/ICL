@@ -17,8 +17,7 @@ int val;
 
         @Override
         public IType typecheck(Environment<IType> e) throws TypeErrorException {
-                // TODO Auto-generated method stub
-                return null;
+                return new TypeInt();
         }
 
 }

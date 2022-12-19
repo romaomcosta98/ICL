@@ -22,7 +22,11 @@ public class ASTNeg implements ASTNode{
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = node.typecheck(e);
+        if (v1 instanceof TypeBool) {
+            return new TypeBool();
+        } else {
+            throw new TypeErrorException("~ : requires a boolean");
+        }
     }
 }

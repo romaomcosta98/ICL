@@ -21,8 +21,8 @@ public class ASTSeq implements ASTNode{
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        lhs.typecheck(e);
+        return rhs.typecheck(e);
     }
 
     

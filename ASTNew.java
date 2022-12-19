@@ -14,8 +14,8 @@ public class ASTNew implements ASTNode {
     }
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = node.typecheck(e);
+        return new TypeRef(v1);
     }
     
     

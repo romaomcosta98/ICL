@@ -32,8 +32,15 @@ public class ASTIf implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = cond.typecheck(e);
+        if (v1 instanceof TypeBool) {
+            IType v2 = then.typecheck(e);
+            IType v3 = els.typecheck(e);
+            if (v2.equals(v3)) {
+                return v2;
+            }
+        }
+        throw new TypeErrorException("if : requires a boolean");
     }
     
 }

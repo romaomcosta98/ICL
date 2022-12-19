@@ -26,8 +26,14 @@ public class ASTAnd implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = lhs.typecheck(e);
+        if (v1 instanceof TypeBool) {
+            IType v2 = rhs.typecheck(e);
+            if (v2 instanceof TypeBool) {
+                return v1;
+            }
+        }
+        throw new TypeErrorException("&& : requires two booleans");
     }
 
     

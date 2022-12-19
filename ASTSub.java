@@ -29,8 +29,14 @@ public class ASTSub implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        IType v1 = lhs.typecheck(e);
+        if (v1 instanceof TypeInt) {
+            IType v2 = rhs.typecheck(e);
+            if (v2 instanceof TypeInt) {
+                return v1;
+            }
+        }
+        throw new TypeErrorException("- : requires two integers");
     }
     
 }
