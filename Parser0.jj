@@ -33,6 +33,49 @@ SKIP :
 
 TOKEN :
 {
+  < LESS: "<" >
+  |
+  < GREATER: ">" >
+  |
+  < LEQ: "<=" >
+  |
+  < GEQ: ">=" >
+  |
+  < AND: "&&" >
+  |
+  < OR: "||" >
+  |
+  < IF: "if" >
+  |
+  < THEN: "then" >
+  |
+  < ELSE: "else" >
+  |
+  < WHILE: "while" >
+  |
+  < DO: "do" >
+  |
+  < IN: "in" >
+  |
+  < END: "end" >
+  |
+  < BOOL: "true" | "false" >
+  |
+  < PRINT: "print" >
+  |
+  < ASSIGN : ":=" >
+  |
+  < EQCOMP : "==" >
+  |
+  < NEQCOMP : "!=" >
+  |
+  < NEW: "new" >
+  |
+  < SEQ: ";" >
+  |
+  < DEF: "def" >
+  |
+  //original para baixo
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < Num: (["0"-"9"]) + >
@@ -52,6 +95,8 @@ TOKEN :
   < RPAR : ")" >
   |
   < EL: "\n" >
+  |
+  < EQ: "=" >
 }
 
 ASTNode Start():
