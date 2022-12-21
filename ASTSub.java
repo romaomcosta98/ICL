@@ -11,20 +11,20 @@ public class ASTSub implements ASTNode {
 
     public IValue eval(Environment<IValue> env) throws TypeErrorException {
         IValue v1 = lhs.eval(env);
-        IValue v2 = rhs.eval(env);
-        if (v1 instanceof VInt && v2 instanceof VInt) {
-            return new VInt(((VInt) v1).getValue() - ((VInt) v2).getValue());
-        } else {
-            throw new TypeErrorException("- : requires two integers");
+        if(v1 instanceof VInt){
+            IValue v2 = rhs.eval(env);
+            if(v2 instanceof VInt){
+                return new VInt(((VInt) v1).getValue() - ((VInt) v2).getValue());
+            }
         }
-
+        throw new TypeErrorException("- : requires two integers");
     }
 
     @Override
     public void compile(CodeBlock c, Environment<Coordinates> env) {
-        lhs.compile(c, env);
-        rhs.compile(c, env);
-        c.emit("isub");
+           lhs.compile(c,env);
+           rhs.compile(c,env);
+           c.emit("isub");
     }
 
     @Override

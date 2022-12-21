@@ -1,6 +1,7 @@
 public class ASTAssign implements ASTNode {
     ASTNode lhs;
     ASTNode rhs;
+    IType type;
 
     public ASTAssign(ASTNode lhs, ASTNode rhs) {
         this.lhs = lhs;
@@ -24,9 +25,31 @@ public class ASTAssign implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<Coordinates> e) {
-        lhs.compile(c, e);
-        rhs.compile(c, e);
+        String refType = null;
+        String typeJ = null;
+        String refClass = null;
+
+        IType typeInRef = ((TypeRef) type).getType();
+        if(typeInRef instanceof TypeInt || typeInRef instanceof TypeBool){
+            refType = "ref_int";
+            typeJ = "I";
+            refClass = "ref_int";
+        }else{
+            refType = "ref_class";
+            typeJ = "Ljava/lang/Object;";
+            refClass = "ref_class";
+        }
         
+        if(lhs instanceof VInt && rhs instanceof VInt){
+            lhs.compile(c, e);
+            rhs.compile(c, e);
+            c.emit("putfield " + refType + "/" + "v" + " " + typeJ);
+        }
+        else if(lhs instanceof VBool && rhs instanceof VBool){
+            lhs.compile(c, e);
+            rhs.compile(c, e);
+            c.emit("putfield " + refType + "/" + "v" + " " + typeJ);
+        }
         
     }
 

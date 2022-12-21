@@ -17,7 +17,7 @@ public class ASTNeg implements ASTNode{
     @Override
     public void compile(CodeBlock c, Environment<Coordinates> e) {
         node.compile(c, e);
-        
+        c.emit("ineg");
     }
 
     @Override

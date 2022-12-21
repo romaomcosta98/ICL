@@ -4,22 +4,6 @@ PARSER_BEGIN(Parser)
 /** ID lister. */
 public class Parser {
 
-  /** Main entry point. */
-  public static void main(String args[]) {
-    Parser parser = new Parser(System.in);
-    ASTNode exp;
-
-    while (true) {
-      try {
-        exp = parser.Start();
-        System.out.println( exp.eval() );
-      } catch (Exception e) {
-        System.out.println ("Syntax Error!");
-        parser.ReInit(System.in);
-      }
-    }
-  }
-
 }
 
 PARSER_END(Parser)
@@ -29,6 +13,7 @@ SKIP :
   " "
 | "\t"
 | "\r"
+| "\n"
 }
 
 TOKEN :
@@ -63,6 +48,8 @@ TOKEN :
   |
   < PRINT: "print" >
   |
+  < PRINTLN: "println" >
+  |
   < ASSIGN : ":=" >
   |
   < EQCOMP : "==" >
@@ -73,10 +60,15 @@ TOKEN :
   |
   < SEQ: ";" >
   |
-  < DEF: "def" >
+  < DEF: "let" >
   |
-  //original para baixo
-  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+  < NEG: "~">
+  |
+  < DEREF: "!" >
+  |
+  < ANY_STRING: "\"" (["a"-"z","A"-"Z","0"-"9"," "])* "\"" >
+  |
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >  //original para baixo
   |
   < Num: (["0"-"9"]) + >
   |
@@ -88,13 +80,9 @@ TOKEN :
   |
   < DIV : "/">
   |
-  <NOT : "~"> 
-  |
   < LPAR : "(" >
   |
   < RPAR : ")" >
-  |
-  < EL: "\n" >
   |
   < EQ: "=" >
 }
@@ -102,22 +90,33 @@ TOKEN :
 ASTNode Start():
 { ASTNode t; }
 {
-   t = Exp() <EL>
+   t = ExpS() <SEQ>
    { return t; }
 }
 
-ASTNode Exp() :
+//Expressão sequencial
+ASTNode ExpS() :
+{ ASTNode t1, t2; }
+{
+  t1 = Exp() ((<SEQ>)* (t2 = Exp()) {t1 = new ASTSeq(t1, t2);})*
+  { return t1; }
+}
+
+//Expressão aritmética
+ASTNode ExpA() :
 { Token op;
   ASTNode t1, t2; }
 {
      t1=Term() ( ( op=<PLUS> | op=<MINUS> ) t2=Term() 
                  { if (op.kind == PLUS) 
                          t1 = new ASTPlus(t1,t2);
-                   else  t1 = new ASTSub(t1,t2);
+                   else  
+                        t1 = new ASTSub(t1,t2);
                  } 
                ) *
      { return t1; } 
 }
+
 
 ASTNode Term() :
 {Token op;
@@ -133,15 +132,72 @@ ASTNode Term() :
      { return t1; } 
 }
 
+//Expressão booleana
+ASTNode Exp() :
+{ Token op;
+  ASTNode t1, t2; }
+{
+     t1=ExpA() ( ( op=<LESS> | op=<GREATER> | op=<LEQ> | op=<GEQ> | op=<AND> | op=<OR> | op=<NEQCOMP>
+     | op=<EQCOMP> | op=<ASSIGN> ) t2=ExpA() 
+                 { if (op.kind == LESS) 
+                         t1 = new ASTLess(t1,t2);
+                   else if (op.kind == GREATER)
+                        t1 = new ASTGreater(t1,t2);
+                   else if (op.kind == LEQ)
+                        t1 = new ASTLessEqual(t1,t2);
+                   else if (op.kind == GEQ)
+                        t1 = new ASTGreaterEqual(t1,t2);
+                    else if (op.kind == AND)
+                        t1 = new ASTAnd(t1,t2);
+                    else if (op.kind == OR)
+                        t1 = new ASTOr(t1,t2);
+                    else if (op.kind == NEQCOMP)
+                        t1 = new ASTNotEqual(t1,t2);
+                    else if (op.kind == EQCOMP)
+                        t1 = new ASTEquals(t1,t2);
+                    else if (op.kind == ASSIGN)
+                        t1 = new ASTAssign(t1,t2);
+                 } 
+               ) *
+     { return t1; } 
+}
+
+
 ASTNode Fact() :
 { Token n; 
-  ASTNode t;}
+  ASTNode t, d, aux, c, els, th, f;
+  els = null;
+  
+  java.util.Map<String, ASTNode> e = new java.util.HashMap<String, ASTNode>();
+}
 {
    ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); } 
     | 
     <LPAR> t=Exp() <RPAR>
     | 
-    n = <NOT> 
+    n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
+    |
+    n=<Id> { t = new ASTId(n.image); }
+    |
+    <NEG> t=Exp() { t = new ASTNeg(t); }
+    |
+    <DEREF> f=Fact() { t = new ASTDeref(f); }
+    |
+    <NEW> f=Fact() { t = new ASTNew(f); }
+    |
+    <PRINT> t=Exp() { t = new ASTPrint(t); }
+    |
+    <PRINTLN> t=Exp() { t = new ASTPrintln(t); }
+    |
+    <IF> c=Exp() <THEN> th=ExpS() (<ELSE> els=ExpS())* <END> { t = new ASTIf(c,th,els); }
+    |
+    <WHILE> c=ExpS() <DO> d=ExpS() <END> { t = new ASTWhile(c,d); }
+    |
+    <DEF> (n=<Id> <EQ> aux=Exp() {e.put(n.image,aux);} )+  <IN> d=ExpS() <END> { t = new ASTDef(e, d);}
+    |
+    <MINUS> t=Fact() { t = new ASTMinus(t); }
+    |
+    n = <ANY_STRING> { t = new ASTString(n.image); }
     )
    { return t; }
 }

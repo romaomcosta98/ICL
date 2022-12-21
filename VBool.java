@@ -1,5 +1,7 @@
 public class VBool implements IValue {
+    
     boolean value;
+
     public VBool(boolean v) {
         value = v;
     }
@@ -11,4 +13,5 @@ public class VBool implements IValue {
     public boolean getValue() {
         return value;
     }
+    
 }

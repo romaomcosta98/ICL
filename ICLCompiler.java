@@ -10,7 +10,7 @@ public class ICLCompiler {
         try{
             exp = parser.Start();
             CodeBlock c = new CodeBlock();
-            exp.compile(c, new Environment<>());
+            exp.compile(c, new Environment<>(null));
             c.dump(new PrintStream(new FileOutputStream("Demo.j", false)));
             System.out.println("Compilation successful!");
         } catch (Exception e) {

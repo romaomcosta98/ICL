@@ -10,10 +10,6 @@ public class Environment<T> {
         this.prevEnv = prevEnvironment;
     }
 
-    public Environment() {
-        this.prevEnv = null;
-    }
-
     Environment<T> beginScope(){
         return new Environment<T>(this);
     } //push level

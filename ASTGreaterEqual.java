@@ -18,9 +18,19 @@ public class ASTGreaterEqual implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<Coordinates> e) {
+        int startLabels = c.CountLabels(2);
+        String l1 = "L" + startLabels;
+        String l2 = "L" + (startLabels + 1);
         lhs.compile(c, e);
         rhs.compile(c, e);
-        c.emit("if_icmpge");  
+        c.emit("isub");
+        c.emit("ifge" + l1);
+        c.emit("iconst_0");
+        c.emit("goto" + l2);
+        c.emit(l1 + ":");
+        c.emit("iconst_1");
+        c.emit(l2 + ":");
+        
     }
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {

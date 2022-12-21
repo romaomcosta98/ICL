@@ -12,7 +12,7 @@ int val;
 
         @Override
         public void compile(CodeBlock c, Environment<Coordinates> e) {
-               c.emit(String.format("sipush %s", val));
+               c.emit("sipush " + val);
         }
 
         @Override

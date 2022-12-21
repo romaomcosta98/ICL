@@ -16,16 +16,21 @@ public class ASTPrint implements ASTNode {
         }else {
             throw new TypeErrorException("print : requires a value");
         }
+        System.out.println(v1.toString());
         return v1;
     }
 
     @Override
     public void compile(CodeBlock c, Environment<Coordinates> e) {
+        
+        
         node.compile(c, e);
+        
     }
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-       return null;   
+        IType v1 = node.typecheck(e);
+        return v1;
     }
 }

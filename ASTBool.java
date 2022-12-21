@@ -11,13 +11,17 @@ public class ASTBool implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<Coordinates> env) {
-        
-      
+         if(value){
+             c.emit("iconst_1");
+         }
+         else{
+             c.emit("iconst_0");
+         }
     }
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeErrorException {
-        
+        return new TypeBool(); 
     }    
 }
 

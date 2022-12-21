@@ -9,25 +9,73 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int Id = 4;
+  int LESS = 5;
   /** RegularExpression Id. */
-  int Num = 5;
+  int GREATER = 6;
   /** RegularExpression Id. */
-  int PLUS = 6;
+  int LEQ = 7;
   /** RegularExpression Id. */
-  int MINUS = 7;
+  int GEQ = 8;
   /** RegularExpression Id. */
-  int TIMES = 8;
+  int AND = 9;
   /** RegularExpression Id. */
-  int DIV = 9;
+  int OR = 10;
   /** RegularExpression Id. */
-  int NOT = 10;
+  int IF = 11;
   /** RegularExpression Id. */
-  int LPAR = 11;
+  int THEN = 12;
   /** RegularExpression Id. */
-  int RPAR = 12;
+  int ELSE = 13;
   /** RegularExpression Id. */
-  int EL = 13;
+  int WHILE = 14;
+  /** RegularExpression Id. */
+  int DO = 15;
+  /** RegularExpression Id. */
+  int IN = 16;
+  /** RegularExpression Id. */
+  int END = 17;
+  /** RegularExpression Id. */
+  int BOOL = 18;
+  /** RegularExpression Id. */
+  int PRINT = 19;
+  /** RegularExpression Id. */
+  int PRINTLN = 20;
+  /** RegularExpression Id. */
+  int ASSIGN = 21;
+  /** RegularExpression Id. */
+  int EQCOMP = 22;
+  /** RegularExpression Id. */
+  int NEQCOMP = 23;
+  /** RegularExpression Id. */
+  int NEW = 24;
+  /** RegularExpression Id. */
+  int SEQ = 25;
+  /** RegularExpression Id. */
+  int DEF = 26;
+  /** RegularExpression Id. */
+  int NEG = 27;
+  /** RegularExpression Id. */
+  int DEREF = 28;
+  /** RegularExpression Id. */
+  int ANY_STRING = 29;
+  /** RegularExpression Id. */
+  int Id = 30;
+  /** RegularExpression Id. */
+  int Num = 31;
+  /** RegularExpression Id. */
+  int PLUS = 32;
+  /** RegularExpression Id. */
+  int MINUS = 33;
+  /** RegularExpression Id. */
+  int TIMES = 34;
+  /** RegularExpression Id. */
+  int DIV = 35;
+  /** RegularExpression Id. */
+  int LPAR = 36;
+  /** RegularExpression Id. */
+  int RPAR = 37;
+  /** RegularExpression Id. */
+  int EQ = 38;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -38,16 +86,41 @@ public interface ParserConstants {
     "\" \"",
     "\"\\t\"",
     "\"\\r\"",
+    "\"\\n\"",
+    "\"<\"",
+    "\">\"",
+    "\"<=\"",
+    "\">=\"",
+    "\"&&\"",
+    "\"||\"",
+    "\"if\"",
+    "\"then\"",
+    "\"else\"",
+    "\"while\"",
+    "\"do\"",
+    "\"in\"",
+    "\"end\"",
+    "<BOOL>",
+    "\"print\"",
+    "\"println\"",
+    "\":=\"",
+    "\"==\"",
+    "\"!=\"",
+    "\"new\"",
+    "\";\"",
+    "\"let\"",
+    "\"~\"",
+    "\"!\"",
+    "<ANY_STRING>",
     "<Id>",
     "<Num>",
     "\"+\"",
     "\"-\"",
     "\"*\"",
     "\"/\"",
-    "\"~\"",
     "\"(\"",
     "\")\"",
-    "\"\\n\"",
+    "\"=\"",
   };
 
 }

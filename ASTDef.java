@@ -7,8 +7,10 @@ public class ASTDef implements ASTNode{
     Map<String, ASTNode> init;
     ASTNode body;
 
-    public ASTDef() {
-       init = new HashMap<String, ASTNode>();
+    public ASTDef(Map<String, ASTNode> init, ASTNode body) {
+        this.init = init;
+        this.body = body;
+
     }
 
     public IValue eval(Environment<IValue> e) throws TypeErrorException{

@@ -24,10 +24,16 @@ public class ASTIf implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<Coordinates> e) {
-        c.emit("if");
+        int startLabels = c.CountLabels(2);
+        String l1 = "L" + startLabels;
+        String l2 = "L" + (startLabels + 1);
         cond.compile(c, e);
+        c.emit("ifeq" + l1);
         then.compile(c, e);
+        c.emit("goto" + l2);
+        c.emit(l1 + ":");
         els.compile(c, e);
+        c.emit(l2 + ":");
     }
 
     @Override

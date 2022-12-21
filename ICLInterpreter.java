@@ -6,20 +6,19 @@ import java.util.Scanner;
 public class ICLInterpreter {
 
     public static void main(String[] args) throws FileNotFoundException {
-        if(args.length < 1) {
-            System.out.println("Missing file name");
-        }
-
-        Parser parser = new Parser(new FileInputStream(new File(args[0])));
+        Parser parser = new Parser(System.in);
         ASTNode exp;
 
-        try{
-            exp = parser.Start();
-            exp.eval(new Environment<>());
-            System.out.println(exp.eval(new Environment<>()));
-        } catch (Exception e) {
-            System.out.println("Syntax Error!");
-            e.printStackTrace();
+        while(true){
+            System.out.println("Please insert you code to be interpreted: ");
+            try{
+                exp = parser.Start();
+                System.out.println(exp.eval(new Environment<>(null)).toString());
+            } catch (Exception e) {
+                System.out.println("Syntax Error!");
+                e.printStackTrace();
+                parser.ReInit(System.in);
+            }
         }
     }
 }
