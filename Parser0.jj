@@ -60,13 +60,13 @@ TOKEN :
   |
   < SEQ: ";" >
   |
-  < DEF: "let" >
-  |
   < NEG: "~">
   |
   < DEREF: "!" >
   |
   < ANY_STRING: "\"" (["a"-"z","A"-"Z","0"-"9"," "])* "\"" >
+  |
+  < DEF: "let" >
   |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >  //original para baixo
   |
@@ -85,12 +85,19 @@ TOKEN :
   < RPAR : ")" >
   |
   < EQ: "=" >
+  |
+  < DOUBLESEQ: ";;" >
+  |
+  < LBRA: "{" >
+  |
+  < RBRA: "}" >
+
 }
 
 ASTNode Start():
 { ASTNode t; }
 {
-   t = ExpS() <SEQ>
+   t = ExpS() <DOUBLESEQ>
    { return t; }
 }
 
@@ -98,8 +105,44 @@ ASTNode Start():
 ASTNode ExpS() :
 { ASTNode t1, t2; }
 {
-  t1 = Exp() ((<SEQ>)* (t2 = Exp()) {t1 = new ASTSeq(t1, t2);})*
+  t1 = ExpAssign() ((<SEQ>)* (t2 = ExpAssign()) {t1 = new ASTSeq(t1, t2);})*
   { return t1; }
+}
+
+//Expressão de atribuição
+ASTNode ExpAssign() :
+{ ASTNode t1, t2; }
+{
+  t1 = Exp() (<ASSIGN> t2 = Exp() {t1 = new ASTAssign(t1, t2);})*
+  { return t1; }
+}
+
+//Expressão booleana
+ASTNode Exp() :
+{ Token op;
+  ASTNode t1, t2; }
+{
+     t1=ExpA() ( ( op=<LESS> | op=<GREATER> | op=<LEQ> | op=<GEQ> | op=<AND> | op=<OR> | op=<NEQCOMP>
+     | op=<EQCOMP>) t2=ExpA() 
+                 { if (op.kind == LESS) 
+                         t1 = new ASTLess(t1,t2);
+                   else if (op.kind == GREATER)
+                        t1 = new ASTGreater(t1,t2);
+                   else if (op.kind == LEQ)
+                        t1 = new ASTLessEqual(t1,t2);
+                   else if (op.kind == GEQ)
+                        t1 = new ASTGreaterEqual(t1,t2);
+                    else if (op.kind == AND)
+                        t1 = new ASTAnd(t1,t2);
+                    else if (op.kind == OR)
+                        t1 = new ASTOr(t1,t2);
+                    else if (op.kind == NEQCOMP)
+                        t1 = new ASTNotEqual(t1,t2);
+                    else if (op.kind == EQCOMP)
+                        t1 = new ASTEquals(t1,t2);
+                 } 
+               ) *
+     { return t1; } 
 }
 
 //Expressão aritmética
@@ -132,42 +175,13 @@ ASTNode Term() :
      { return t1; } 
 }
 
-//Expressão booleana
-ASTNode Exp() :
-{ Token op;
-  ASTNode t1, t2; }
-{
-     t1=ExpA() ( ( op=<LESS> | op=<GREATER> | op=<LEQ> | op=<GEQ> | op=<AND> | op=<OR> | op=<NEQCOMP>
-     | op=<EQCOMP> | op=<ASSIGN> ) t2=ExpA() 
-                 { if (op.kind == LESS) 
-                         t1 = new ASTLess(t1,t2);
-                   else if (op.kind == GREATER)
-                        t1 = new ASTGreater(t1,t2);
-                   else if (op.kind == LEQ)
-                        t1 = new ASTLessEqual(t1,t2);
-                   else if (op.kind == GEQ)
-                        t1 = new ASTGreaterEqual(t1,t2);
-                    else if (op.kind == AND)
-                        t1 = new ASTAnd(t1,t2);
-                    else if (op.kind == OR)
-                        t1 = new ASTOr(t1,t2);
-                    else if (op.kind == NEQCOMP)
-                        t1 = new ASTNotEqual(t1,t2);
-                    else if (op.kind == EQCOMP)
-                        t1 = new ASTEquals(t1,t2);
-                    else if (op.kind == ASSIGN)
-                        t1 = new ASTAssign(t1,t2);
-                 } 
-               ) *
-     { return t1; } 
-}
-
 
 ASTNode Fact() :
 { Token n; 
   ASTNode t, d, aux, c, els, th, f;
   els = null;
-  
+  th = null;
+  d = null;
   java.util.Map<String, ASTNode> e = new java.util.HashMap<String, ASTNode>();
 }
 {
@@ -189,11 +203,11 @@ ASTNode Fact() :
     |
     <PRINTLN> t=Exp() { t = new ASTPrintln(t); }
     |
-    <IF> c=Exp() <THEN> th=ExpS() (<ELSE> els=ExpS())* <END> { t = new ASTIf(c,th,els); }
+    <IF> c=Exp() <LBRA> (th=ExpS())* <RBRA> (<ELSE> <LBRA> (els=ExpS())* <RBRA>)* { t = new ASTIf(c,th,els); }
     |
-    <WHILE> c=ExpS() <DO> d=ExpS() <END> { t = new ASTWhile(c,d); }
+    <WHILE> c=Exp() <LBRA> (d=ExpS())* <RBRA>{ t = new ASTWhile(c,d); }
     |
-    <DEF> (n=<Id> <EQ> aux=Exp() {e.put(n.image,aux);} )+  <IN> d=ExpS() <END> { t = new ASTDef(e, d);}
+    <LBRA> (<DEF> n=<Id> <EQ> aux=ExpAssign() <SEQ> {e.put(n.image,aux);} )+ d=ExpS() <RBRA> { t = new ASTDef(e, d);}
     |
     <MINUS> t=Fact() { t = new ASTMinus(t); }
     |

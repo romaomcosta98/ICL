@@ -3,13 +3,14 @@ import java.io.PrintStream;
 
 public class ICLCompiler {
     public static void main(String[] args) {
-        System.out.println("Please insert you code to be compiled: ");
         Parser parser = new Parser(System.in);
         ASTNode exp;
+        CodeBlock c;
 
         try{
             exp = parser.Start();
-            CodeBlock c = new CodeBlock();
+            c = new CodeBlock(new File(args[1]));
+
             exp.compile(c, new Environment<>(null));
             c.dump(new PrintStream(new FileOutputStream("Demo.j", false)));
             System.out.println("Compilation successful!");

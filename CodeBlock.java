@@ -9,6 +9,7 @@ public class CodeBlock {
     String code[];
     int pos;
 
+    //tem de receber o nome do ficheiro
     public CodeBlock() {
         this.code = new String[100];
         this.pos = 0;

@@ -7,8 +7,6 @@ public class ASTPrintln implements ASTNode {
 
     public IValue eval(Environment<IValue> env) throws TypeErrorException {
         IValue v1 = node.eval(env);
-        System.out.println(v1.toString());
-        System.out.println("\n");
         return v1;
     }
 
